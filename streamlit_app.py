@@ -4,7 +4,6 @@ import calendar
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import xarray as xr
 import getdata
 
 import matplotlib.pyplot as plt
@@ -22,29 +21,17 @@ seasons = ['Spring', 'Summer', 'Autumn','Winter']
 seasons_palette = sns.color_palette("viridis_r",4)
 
 data_load_state = st.sidebar.text('Loading data...')
+
 dfg, dfgd = getdata.read_global_monthly_temperature_anomalies('GLB', download=False)
 dfn, dfnd = getdata.read_global_monthly_temperature_anomalies('NH', download=False)
 dfs, dfsd = getdata.read_global_monthly_temperature_anomalies('SH', download=False)
 dfz, dfzd = getdata.read_zonal_temperature_anomalies(download=False)
-
 dfm = pd.concat([dfg,dfn,dfs])
 dfd = pd.concat([dfgd,dfnd,dfsd])
-
-
-@st.cache(hash_funcs={xr.core.dataset.Dataset: id}, allow_output_mutation=True)
-def load_xr():
-    file_path = os.path.join('data', 'gistemp1200_GHCNv4_ERSSTv5.nc')
-    ds = xr.open_dataset(file_path)
-    return ds
-ds = load_xr()
-ds.close()
-
-
 
 data_load_state.text('Data loaded.')
 
 st.title('Global Temperature Anomalies')
-
 
 with st.sidebar:
 
