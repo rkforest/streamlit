@@ -174,6 +174,3 @@ with container2:
             g.set(xlabel = "Degrees (Celsius)")     
 
             st.pyplot(g)
-
-g = ds.tempanomaly.isel(time=-1).plot()
-st.pyplot(g)
