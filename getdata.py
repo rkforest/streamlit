@@ -16,6 +16,8 @@ import os
 import calendar
 import pandas as pd
 from pandas.api.types import CategoricalDtype
+import streamlit as st
+
 
 def read_global_monthly_temperature_anomalies(id, download=False):
 
