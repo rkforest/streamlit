@@ -1,6 +1,3 @@
-## NASA Data  
-
-
 #'https://data.giss.nasa.gov/gistemp/tabledata_v4/'
 # GLB.Ts+dSST.csv  
 # NH.Ts+dSST.csv  
@@ -17,8 +14,20 @@ import calendar
 import pandas as pd
 from pandas.api.types import CategoricalDtype
 import streamlit as st
+import geopandas as gpd
+import xarray as xr
 
+@st.cache(hash_funcs={xr.core.dataset.Dataset: id}, allow_output_mutation=True)
+def read_xarray_file(download=False):
+    file_name = 'gistemp1200_GHCNv4_ERSSTv5.nc'
+    file_path = os.path.join('data', file_name)
+    ds = xr.open_dataset(file_path)
+    df = ds.tempanomaly.to_dataframe().reset_index()
+    df.dropna(inplace=True) 
 
+    return(ds,df)
+
+@st.cache()
 def read_global_monthly_temperature_anomalies(id, download=False):
 
     file_name = id + ".Ts+dSST.csv"
@@ -106,7 +115,7 @@ def read_global_monthly_temperature_anomalies(id, download=False):
 
     return(df, dfd)
 
-
+@st.cache()
 def read_zonal_temperature_anomalies(download=False):
 
     file_name = 'ZonAnn.Ts+dSST.csv'
