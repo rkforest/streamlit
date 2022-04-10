@@ -1,3 +1,5 @@
+proj
+GEOS
 numpy
 pandas
 matplotlib
