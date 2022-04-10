@@ -1,11 +1,7 @@
-
 numpy
-
+pandas
 matplotlib
-
 seaborn
-
-
 xarray
 rioxarray
 cartopy
