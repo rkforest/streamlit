@@ -11,21 +11,29 @@
 
 import os
 import calendar
+import numpy as np
 import pandas as pd
 from pandas.api.types import CategoricalDtype
 import streamlit as st
-import geopandas as gpd
+#import geopandas as gpd
 import xarray as xr
+import rioxarray as rio
+
+robinson_proj ="+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+#EqualEarthProj= "+proj=eqearth +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 
 @st.cache(hash_funcs={xr.core.dataset.Dataset: id}, allow_output_mutation=True)
 def read_xarray_file(download=False):
     file_name = 'gistemp1200_GHCNv4_ERSSTv5.nc'
     file_path = os.path.join('data', file_name)
+    
     ds = xr.open_dataset(file_path)
-    df = ds.tempanomaly.to_dataframe().reset_index()
-    df.dropna(inplace=True) 
-
-    return(ds,df)
+    ds = ds.rio.write_crs(4326)
+    da = ds['tempanomaly']
+    da = da.rio.reproject(robinson_proj,nodata=np.NaN)
+    da10y = da.resample(time='10Y').mean()
+    
+    return(da,da10y)
 
 @st.cache()
 def read_global_monthly_temperature_anomalies(id, download=False):
