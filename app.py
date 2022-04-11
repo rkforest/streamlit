@@ -98,6 +98,7 @@ st.subheader("Temperature Anomaly in "+ str(map_year) + " [°C]")
 fig = plt.figure()
 #ax = fig.add_subplot(1,1,1, projection = ccrs.PlateCarree())
 ax = fig.add_subplot(1,1,1, projection = ccrs.Robinson())
+#ax = fig.add_subplot(1,1,1)
 
 ax.add_feature(NaturalEarthFeature('cultural', 'admin_0_countries', '10m'),
                        facecolor='none', edgecolor='black', lw=0.1)
