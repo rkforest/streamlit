@@ -4,5 +4,4 @@ matplotlib
 seaborn
 xarray
 rioxarray
-cartopy
 streamlit
