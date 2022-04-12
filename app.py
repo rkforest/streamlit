@@ -1,19 +1,16 @@
 import os
-import calendar
-
 import numpy as np
-import pandas as pd
-#import geopandas as gpd
-import seaborn as sns
-
-import getdata
+#import pandas as pd
+import xarray as xr
+#import getdata
+import getnetcdf
 
 import matplotlib.pyplot as plt
-from matplotlib import colors
-import plotly.express as px
+#from matplotlib import colors
+#import plotly.express as px
 
-import cartopy.crs as ccrs
-from cartopy.feature import NaturalEarthFeature
+#import cartopy.crs as ccrs
+#from cartopy.feature import NaturalEarthFeature
 
 import streamlit as st
 
@@ -23,9 +20,9 @@ st.set_page_config(
     layout='wide',
 )
 
-sns.set_style('darkgrid') 
-seasons = ['Spring', 'Summer', 'Autumn','Winter']
-seasons_palette = sns.color_palette("viridis_r",4)
+#sns.set_style('darkgrid') 
+#seasons = ['Spring', 'Summer', 'Autumn','Winter']
+#seasons_palette = sns.color_palette("viridis_r",4)
 
 st.title('Global Temperature Change')
 
@@ -38,7 +35,7 @@ data_load_state = st.sidebar.text('Loading data...')
 # dfm = pd.concat([dfg,dfn,dfs])
 # dfd = pd.concat([dfgd,dfnd,dfsd])
 
-da10y = getdata.read_xarray_file()
+da, da_robinson = getnetcdf.read_xarray_file()
 
 
 
@@ -95,28 +92,15 @@ cbar_kwargs = {
 
 st.subheader("Temperature Anomaly in "+ str(map_year) + " [°C]")
 
-fig = plt.figure()
-#ax = fig.add_subplot(1,1,1, projection = ccrs.PlateCarree())
-ax = fig.add_subplot(1,1,1, projection = ccrs.Robinson())
-#ax = fig.add_subplot(1,1,1)
-
-ax.add_feature(NaturalEarthFeature('cultural', 'admin_0_countries', '10m'),
-                       facecolor='none', edgecolor='black', lw=0.1)
-ax.set_extent([-179, 179, -81, 81])
+fig = plt.figure(figsize=(20,10))
+ax = fig.add_subplot(1,1,1)
 ax.set_title("Temperature Anomaly in "+ str(map_year) + " [°C]")
-da10y.isel(time=i).plot.imshow(ax=ax, add_labels=False, add_colorbar=True,
+da_robinson.isel(time=i).plot.imshow(ax=ax, add_labels=False, add_colorbar=True,
                vmin=-4, vmax=4, cmap='coolwarm',
                cbar_kwargs=cbar_kwargs)
 st.pyplot(fig)
 
-
-
 data_load_state.text('Data loaded.')
-
-
-
-
-
 
 
 # to center colorbar at zero
