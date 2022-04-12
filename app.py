@@ -18,8 +18,8 @@ import matplotlib.pyplot as plt
 #from matplotlib import colors
 #import plotly.express as px
 
-#import cartopy.crs as ccrs
-#from cartopy.feature import NaturalEarthFeature
+import cartopy.crs as ccrs
+from cartopy.feature import NaturalEarthFeature
 
 import streamlit as st
 
