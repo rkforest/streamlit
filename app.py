@@ -5,9 +5,10 @@ import pandas as pd
 import getdata
 #import getnetcdf
 
-#import matplotlib.pyplot as plt
+
+import matplotlib.pyplot as plt
 import seaborn as sns
-#from matplotlib import colors
+from matplotlib import colors
 import plotly.express as px
 
 #import cartopy.crs as ccrs
@@ -38,7 +39,12 @@ dfd = pd.concat([dfgd,dfnd,dfsd])
 
 # get netcdf data
 #da, da_robinson = getnetcdf.read_xarray_file()
-
+file_path = 'data/gistemp10y.csv'
+cols_to_import = ['time','lat','lon','tempanomaly']
+df = pd.read_csv(file_path,
+                 usecols=cols_to_import,
+                 parse_dates=['time'],
+                 index_col='time')
 
 
 #sidebar
@@ -73,34 +79,50 @@ df3 = dfm.query('Id in ("NH","SH") and Year >= @year_start and Year <= @year_end
 
 # main plot 
 
-# map_year = st.slider(
-#     label='Select Decade',
-#     min_value=1880,
-#     max_value=2020,
-#     value=(2000),
-#     step=10
-#     )
+map_year = st.slider(
+    label='Select Decade',
+    min_value=1880,
+    max_value=2020,
+    value=(2000),
+    step=10
+    )
 
-# i = int((map_year-1880)/10)+1
+#i = int((map_year-1880)/10)+1
 
-# cbar_kwargs = {
-#     'orientation':'horizontal',
-#     'fraction': 0.02,
-#     'pad': 0.02,
-#     'extend':'neither',
-#     'aspect': 50,
-#     'label': 'Degrees [°C]'
-# }
+filt1 = df.index.year == map_year
+filt2 = df['lat'] < 81
+filt3 = df['lat'] > -81
+df_plot = df[filt1 & filt2 & filt3]
 
-# st.subheader("Temperature Anomaly in "+ str(map_year) + " [°C]")
+st.subheader("Temperature Anomaly in "+ str(map_year) + " [°C]")
 
-# fig = plt.figure(figsize=(20,10))
-# ax = fig.add_subplot(1,1,1)
-# ax.set_title("Temperature Anomaly in "+ str(map_year) + " [°C]")
+
+divnorm = colors.TwoSlopeNorm(vmin=df_plot['tempanomaly'].max()*-1,
+                              vcenter=0.,
+                              vmax=df_plot['tempanomaly'].max())
+
+g = sns.relplot(
+    kind="scatter", height=8, aspect=2,
+    data=df_plot,
+    x='lon',
+    y='lat',
+    hue='tempanomaly',
+    legend=False,
+    palette="coolwarm", 
+    s=100,
+    edgecolor=None,
+    hue_norm=divnorm)
+g.set(title="Global Temperature Anomalies", xlabel="lon", ylabel="lat")
+
+sm = plt.cm.ScalarMappable(cmap='coolwarm', norm=divnorm)
+for ax in g.axes.flat:
+    ax.figure.colorbar(sm)
+
 # da_robinson.isel(time=i).plot.imshow(ax=ax, add_labels=False, add_colorbar=True,
 #                vmin=-4, vmax=4, cmap='coolwarm',
 #                cbar_kwargs=cbar_kwargs)
-# st.pyplot(fig)
+
+st.pyplot(g)
 
 data_load_state.text('Data loaded.')
 
