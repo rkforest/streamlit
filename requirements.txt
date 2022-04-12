@@ -5,6 +5,6 @@ seaborn
 xarray
 rioxarray
 streamlit
-proj >= 8.0.0
+proj
 GEOS
 cartopy
