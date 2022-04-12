@@ -2,9 +2,9 @@ numpy
 pandas
 matplotlib
 seaborn 
-xarray == 2022.3.0
-rioxarray == 0.10.3
-streamlit == 1.8.1
-proj == 9.0.0
-GEOS == 3.10.2
-cartopy == 0.20.2
+xarray
+rioxarray
+streamlit
+proj >= 8.0.0
+GEOS
+cartopy
