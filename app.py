@@ -1,25 +1,17 @@
-import conds
 import os
-
-conda_file_dir = conda.__file__
-conda_dir = conda_file_dir.split('lib')[0]
-proj_lib = os.path.join(os.path.join(conda_dir, 'share'), 'proj')
-os.environ["PROJ_LIB"] = proj_lib
-
-
-
 import numpy as np
-#import pandas as pd
+import pandas as pd
 import xarray as xr
-#import getdata
-import getnetcdf
+import getdata
+#import getnetcdf
 
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+import seaborn as sns
 #from matplotlib import colors
-#import plotly.express as px
+import plotly.express as px
 
-import cartopy.crs as ccrs
-from cartopy.feature import NaturalEarthFeature
+#import cartopy.crs as ccrs
+#from cartopy.feature import NaturalEarthFeature
 
 import streamlit as st
 
@@ -29,85 +21,86 @@ st.set_page_config(
     layout='wide',
 )
 
-#sns.set_style('darkgrid') 
-#seasons = ['Spring', 'Summer', 'Autumn','Winter']
-#seasons_palette = sns.color_palette("viridis_r",4)
+sns.set_style('darkgrid') 
+seasons = ['Spring', 'Summer', 'Autumn','Winter']
+seasons_palette = sns.color_palette("viridis_r",4)
 
 st.title('Global Temperature Change')
 
-# get data
+# get csv data
 data_load_state = st.sidebar.text('Loading data...')
-# dfg, dfgd = getdata.read_global_monthly_temperature_anomalies('GLB', download=False)
-# dfn, dfnd = getdata.read_global_monthly_temperature_anomalies('NH', download=False)
-# dfs, dfsd = getdata.read_global_monthly_temperature_anomalies('SH', download=False)
-# dfz, dfzd = getdata.read_zonal_temperature_anomalies(download=False)
-# dfm = pd.concat([dfg,dfn,dfs])
-# dfd = pd.concat([dfgd,dfnd,dfsd])
+dfg, dfgd = getdata.read_global_monthly_temperature_anomalies('GLB', download=False)
+dfn, dfnd = getdata.read_global_monthly_temperature_anomalies('NH', download=False)
+dfs, dfsd = getdata.read_global_monthly_temperature_anomalies('SH', download=False)
+dfz, dfzd = getdata.read_zonal_temperature_anomalies(download=False)
+dfm = pd.concat([dfg,dfn,dfs])
+dfd = pd.concat([dfgd,dfnd,dfsd])
 
-da, da_robinson = getnetcdf.read_xarray_file()
+# get netcdf data
+#da, da_robinson = getnetcdf.read_xarray_file()
 
 
 
-# sidebar
-#with st.sidebar:
+#sidebar
+with st.sidebar:
 
-    # st.sidebar.markdown('---')
-    # year_range = st.slider(
-    #     label='Select start and end year',
-    #     min_value=1880,
-    #     max_value=2022,
-    #     value=(2020,2020),
-    #     step=10
-    #     )
-    # year_start = year_range[0]
-    # year_end = year_range[1]    
+    st.sidebar.markdown('---')
+    year_range = st.slider(
+        label='Select start and end year',
+        min_value=1880,
+        max_value=2022,
+        value=(2020,2020),
+        step=10
+        )
+    year_start = year_range[0]
+    year_end = year_range[1]    
 
-    # st.sidebar.markdown('---')
-    # aggregation = st.radio(
-    #     'Select Aggregation',
-    #       ('Season', 'Month', 'Hemisphere'),
-    #       index=0)
+    st.sidebar.markdown('---')
+    aggregation = st.radio(
+        'Select Aggregation',
+          ('Season', 'Month', 'Hemisphere'),
+          index=0)
 
-    # st.sidebar.markdown('---')
-    # if st.sidebar.checkbox('Show raw data'):
-    #     st.sidebar.subheader('Raw data')
-    #     st.sidebar.dataframe(dfg['Anomaly'])
+    st.sidebar.markdown('---')
+    if st.sidebar.checkbox('Show raw data'):
+        st.sidebar.subheader('Raw data')
+        st.sidebar.dataframe(dfg['Anomaly'])
 
-# select_date = '2022-02-15'
-# df1 = dfm.query('Id == "GLB" and Year >= @year_start and Year <= @year_end').reset_index()
-# df2 = dfd.query('Id == "GLB" and Decade >= @year_start and Decade <= @year_end').reset_index()
-# df3 = dfm.query('Id in ("NH","SH") and Year >= @year_start and Year <= @year_end').reset_index()
+select_date = '2022-02-15'
+df1 = dfm.query('Id == "GLB" and Year >= @year_start and Year <= @year_end').reset_index()
+df2 = dfd.query('Id == "GLB" and Decade >= @year_start and Decade <= @year_end').reset_index()
+df3 = dfm.query('Id in ("NH","SH") and Year >= @year_start and Year <= @year_end').reset_index()
 
 # main plot 
 
-map_year = st.slider(
-    label='Select Decade',
-    min_value=1880,
-    max_value=2020,
-    value=(2000),
-    step=10
-    )
+# map_year = st.slider(
+#     label='Select Decade',
+#     min_value=1880,
+#     max_value=2020,
+#     value=(2000),
+#     step=10
+#     )
 
-i = int((map_year-1880)/10)+1
+# i = int((map_year-1880)/10)+1
 
-cbar_kwargs = {
-    'orientation':'horizontal',
-    'fraction': 0.02,
-    'pad': 0.02,
-    'extend':'neither',
-    'aspect': 50,
-    'label': 'Degrees [°C]'
-}
+# cbar_kwargs = {
+#     'orientation':'horizontal',
+#     'fraction': 0.02,
+#     'pad': 0.02,
+#     'extend':'neither',
+#     'aspect': 50,
+#     'label': 'Degrees [°C]'
+# }
 
-st.subheader("Temperature Anomaly in "+ str(map_year) + " [°C]")
+# st.subheader("Temperature Anomaly in "+ str(map_year) + " [°C]")
 
-fig = plt.figure(figsize=(20,10))
-ax = fig.add_subplot(1,1,1)
-ax.set_title("Temperature Anomaly in "+ str(map_year) + " [°C]")
-da_robinson.isel(time=i).plot.imshow(ax=ax, add_labels=False, add_colorbar=True,
-               vmin=-4, vmax=4, cmap='coolwarm',
-               cbar_kwargs=cbar_kwargs)
-st.pyplot(fig)
+# fig = plt.figure(figsize=(20,10))
+# ax = fig.add_subplot(1,1,1)
+# ax.set_title("Temperature Anomaly in "+ str(map_year) + " [°C]")
+# da_robinson.isel(time=i).plot.imshow(ax=ax, add_labels=False, add_colorbar=True,
+#                vmin=-4, vmax=4, cmap='coolwarm',
+#                cbar_kwargs=cbar_kwargs)
+# st.pyplot(fig)
 
 data_load_state.text('Data loaded.')
 
@@ -133,117 +126,117 @@ data_load_state.text('Data loaded.')
 
 # container plots
 
-# container1 = st.container()
-# container2 = st.container()
+container1 = st.container()
+container2 = st.container()
 
-# with container1:
+with container1:
 
-#     col1, col2  = st.columns([5,3])
+    col1, col2  = st.columns([5,3])
 
-#     with col1:
+    with col1:
 
-#         st.subheader("Date Range: " +  str(year_start) + "-" + str(year_end))
+        st.subheader("Date Range: " +  str(year_start) + "-" + str(year_end))
 
-#         g = px.scatter(df1,
-#                         x='Date',
-#                         y='Anomaly',
-#                         color='Anomaly',
-#                         color_continuous_scale='balance',
-#                         color_continuous_midpoint=0,
-#                         #range_x=['1880-01-01','2022-12-31'],
-#                         range_y=[-1.5, 1.5],
-#                         range_color=(-1.5, 1.5),
-#                         )
-#         g.update_layout(xaxis_title='Date',
-#                         yaxis_title='Degrees (Celsius)',
-#                         coloraxis_colorbar_title_text = '',
-#                         height=500, 
-#                         )            
-#         g.update_traces(marker=dict(size=7,
-#                                     line=dict(width=0.5,
-#                                                 color='Black')))
-#         st.plotly_chart(g)  
+        g = px.scatter(df1,
+                        x='Date',
+                        y='Anomaly',
+                        color='Anomaly',
+                        color_continuous_scale='balance',
+                        color_continuous_midpoint=0,
+                        #range_x=['1880-01-01','2022-12-31'],
+                        range_y=[-1.5, 1.5],
+                        range_color=(-1.5, 1.5),
+                        )
+        g.update_layout(xaxis_title='Date',
+                        yaxis_title='Degrees (Celsius)',
+                        coloraxis_colorbar_title_text = '',
+                        height=500, 
+                        )            
+        g.update_traces(marker=dict(size=7,
+                                    line=dict(width=0.5,
+                                                color='Black')))
+        st.plotly_chart(g)  
 
-#     with col2:
-#         st.subheader("By " + aggregation)
-#         st.text(" ")
-#         st.text(" ")
-#         st.text(" ")
-#         if aggregation == "Season":
+    with col2:
+        st.subheader("By " + aggregation)
+        st.text(" ")
+        st.text(" ")
+        st.text(" ")
+        if aggregation == "Season":
 
-#             g = sns.catplot(
-#                 kind="bar", height=3.5, aspect=1.5,
-#                 data=df1, x='Season', y='Anomaly',
-#                 ci=None,
-#                 order=seasons, palette=seasons_palette, legend=False)
-#             g.set(xlabel="", ylabel = "Degrees (C)")
-#             st.pyplot(g)
+            g = sns.catplot(
+                kind="bar", height=3.5, aspect=1.5,
+                data=df1, x='Season', y='Anomaly',
+                ci=None,
+                order=seasons, palette=seasons_palette, legend=False)
+            g.set(xlabel="", ylabel = "Degrees (C)")
+            st.pyplot(g)
 
-#         elif aggregation == "Month":
-#             g = sns.catplot(
-#                 kind="bar", height=4, aspect=2,
-#                 data=df1, x='Month', y='Anomaly',
-#                 ci=None,
-#                 palette='mako',
-#                 legend=False)
-#             g.set(xlabel="", ylabel = "Degrees (C)")
-#             st.pyplot(g)
-#         elif aggregation == "Hemisphere":
-#             g = sns.catplot(
-#                 kind="bar", height=4, aspect=2,
-#                 data=df3, x='Id', y='Anomaly',
-#                 ci=None,
-#                 palette='mako',
-#                 legend=False)
-#             g.set(xlabel="", ylabel = "Degrees (C)")
-#             st.pyplot(g)
+        elif aggregation == "Month":
+            g = sns.catplot(
+                kind="bar", height=4, aspect=2,
+                data=df1, x='Month', y='Anomaly',
+                ci=None,
+                palette='mako',
+                legend=False)
+            g.set(xlabel="", ylabel = "Degrees (C)")
+            st.pyplot(g)
+        elif aggregation == "Hemisphere":
+            g = sns.catplot(
+                kind="bar", height=4, aspect=2,
+                data=df3, x='Id', y='Anomaly',
+                ci=None,
+                palette='mako',
+                legend=False)
+            g.set(xlabel="", ylabel = "Degrees (C)")
+            st.pyplot(g)
 
-# with container2:
-
-
-#     col1, col2  = st.columns([4,2])
-
-#     with col1:
-
-#         st.subheader("By Latitude")
-#         g = px.bar(dfzd,
-#                     x='Latitude',
-#                     y='Anomaly',
-#                     facet_col="Hemisphere",
-#                     color="Anomaly",
-#                     animation_frame="Decade", 
-#                     range_y=[-2.5,2.5],
-#                     color_continuous_scale='balance',
-#                     color_continuous_midpoint=0,
-#                     )
-#         g.update_layout(xaxis_title='Latitude',
-#                 yaxis_title='Degrees (Celsius)',
-#                 coloraxis_colorbar_title_text = '',)
-#         st.plotly_chart(g) 
+with container2:
 
 
-#     with col2:
+    col1, col2  = st.columns([4,2])
 
-#             st.subheader("Distribution: ")
-#             g = sns.displot(
-#                 kind="hist",
-#                 height=4, aspect=1.5,
-#                 data=df1, x='Anomaly')
-#             g.set(xlabel = "Degrees (Celsius)")     
+    with col1:
 
-#             st.pyplot(g)
+        st.subheader("By Latitude")
+        g = px.bar(dfzd,
+                    x='Latitude',
+                    y='Anomaly',
+                    facet_col="Hemisphere",
+                    color="Anomaly",
+                    animation_frame="Decade", 
+                    range_y=[-2.5,2.5],
+                    color_continuous_scale='balance',
+                    color_continuous_midpoint=0,
+                    )
+        g.update_layout(xaxis_title='Latitude',
+                yaxis_title='Degrees (Celsius)',
+                coloraxis_colorbar_title_text = '',)
+        st.plotly_chart(g) 
 
-# with st.sidebar:
 
-#     st.sidebar.markdown('---')
-#     st.sidebar.info('''
-#     ### Global Temperature Change App
+    with col2:
 
-#     Data Source: https://data.giss.nasa.gov/gistemp
+            st.subheader("Distribution: ")
+            g = sns.displot(
+                kind="hist",
+                height=4, aspect=1.5,
+                data=df1, x='Anomaly')
+            g.set(xlabel = "Degrees (Celsius)")     
 
-#     Python Libaries: Pandas, Geopandas, Xarray, Seaborn, Plotly, Streamlit
+            st.pyplot(g)
 
-#     Author: Rick Forest - rkforest@icloud.com
+with st.sidebar:
 
-#     Updated: Apr 7, 2022''')
+    st.sidebar.markdown('---')
+    st.sidebar.info('''
+    ### Global Temperature Change App
+
+    Data Source: https://data.giss.nasa.gov/gistemp
+
+    Python Libaries: Pandas, Geopandas, Xarray, Seaborn, Plotly, Streamlit
+
+    Author: Rick Forest - rkforest@icloud.com
+
+    Updated: Apr 7, 2022''')
 

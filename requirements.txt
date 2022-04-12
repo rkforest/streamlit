@@ -5,6 +5,4 @@ seaborn
 xarray
 rioxarray
 streamlit
-proj
-GEOS
 cartopy
