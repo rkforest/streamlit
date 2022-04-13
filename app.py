@@ -112,7 +112,7 @@ g = sns.relplot(
     s=100,
     edgecolor=None,
     hue_norm=divnorm)
-g.set(title="Global Temperature Anomalies", xlabel="lon", ylabel="lat")
+g.set(xlabel="Longitude", ylabel="Latitude")
 
 sm = plt.cm.ScalarMappable(cmap='coolwarm', norm=divnorm)
 for ax in g.axes.flat:
