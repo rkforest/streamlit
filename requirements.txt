@@ -6,7 +6,7 @@ streamlit
 pooch
 
 #proj
-geos
-pyshp
-shapely
+#geos
+#pyshp
+#shapely
 cartopy
