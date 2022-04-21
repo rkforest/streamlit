@@ -1,0 +1,17 @@
+name: kr
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python
+  - pip
+  - seaborn # includes dependencies: numpy, pandas, matplotlib
+  - jupyterlab
+  - jupyter_contrib_nbextensions
+  - xarray
+  - netCDF4
+  - h5netcdf
+  - cartopy
+  - streamlit
+  - pooch
