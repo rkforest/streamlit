@@ -5,8 +5,16 @@ seaborn
 streamlit
 pooch
 
-pyproj-bin
-pygeos
-pyshp
+
+python3-dev
+libproj-dev
+proj-data
+proj-bin
+libgeos-dev
+
+
+#pyproj
+#pygeos
+#pyshp
 
 cartopy
