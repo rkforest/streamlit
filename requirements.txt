@@ -5,8 +5,8 @@ seaborn
 streamlit
 pooch
 
-proj
-geos
+libproj
+libgeos
 shapely
 
 cartopy
