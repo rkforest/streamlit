@@ -6,7 +6,7 @@ streamlit
 pooch
 
 
-python3-dev
+
 libproj-dev
 proj-data
 proj-bin
