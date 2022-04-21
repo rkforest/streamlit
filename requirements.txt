@@ -5,8 +5,6 @@ seaborn
 streamlit
 pooch
 
-proj-data
-proj-bin
 libgeos-dev
 
 
