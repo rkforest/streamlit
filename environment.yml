@@ -1,12 +1,9 @@
 name: kr
 channels:
   - conda-forge
-  - defaults
-
 dependencies:
-  - python
   - pip
-  - seaborn # includes dependencies: numpy, pandas, matplotlib
+  - seaborn 
   - jupyterlab
   - jupyter_contrib_nbextensions
   - xarray
