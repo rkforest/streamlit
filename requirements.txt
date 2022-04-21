@@ -5,7 +5,7 @@ seaborn
 streamlit
 pooch
 
-proj-bin
+proj
 geos
 pyshp
 shapely
