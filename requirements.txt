@@ -5,7 +5,7 @@ seaborn
 streamlit
 pooch
 
-proj-bin
+pyproj-bin
 pygeos
 pyshp
 
