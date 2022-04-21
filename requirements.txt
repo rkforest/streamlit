@@ -1,0 +1,13 @@
+numpy
+pandas
+matplotlib
+seaborn
+streamlit
+pooch
+
+proj-bin
+geos
+pyshp
+shapely
+pyproj
+cartopy
