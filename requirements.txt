@@ -5,7 +5,7 @@ seaborn
 streamlit
 pooch
 
-#proj
+pyproj
 #geos
 #pyshp
 #shapely
