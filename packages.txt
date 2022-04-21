@@ -1,2 +1,1 @@
-proj-dev
-geos-dev
+proj-bin
