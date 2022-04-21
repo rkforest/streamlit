@@ -5,9 +5,8 @@ seaborn
 streamlit
 pooch
 
-proj
+pyproj
 pygeos
 pyshp
-shapely
-pyproj
+
 cartopy
