@@ -1,1 +1,6 @@
+libproj-dev
+proj-data
 proj-bin
+libgeos-dev
+cython
+cartopy
