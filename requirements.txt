@@ -6,7 +6,7 @@ streamlit
 pooch
 
 proj
-geos
+pygeos
 pyshp
 shapely
 pyproj
