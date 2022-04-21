@@ -5,6 +5,7 @@ seaborn
 streamlit
 pooch
 
+libproj-dev
 #proj
 #geos
 #pyshp

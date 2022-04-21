@@ -1,4 +1,4 @@
-import conda
+#import conda
 import os
 
 #conda_file_dir = conda.__file__
