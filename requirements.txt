@@ -1,8 +1,10 @@
-numpy
+numpy==1.21.4
+numba==0.53.0
 pandas
 matplotlib
 seaborn
-streamlit
+stream-lit
 pooch
 xarray
-cartopy
+Hvplot
+bokeh==2.41.
